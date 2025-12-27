@@ -40,7 +40,7 @@ MiniOS/
 ---
 
 
-> ⚠️ The structure may evolve as the project grows.
+> The structure may evolve as the project grows.
 
 ---
 
