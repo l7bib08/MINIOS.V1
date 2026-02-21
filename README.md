@@ -93,10 +93,15 @@ This design simulates how real kernels update scheduling decisions at runtime.
 ### CLI Commands:
 
 run <name> <burst>     Create process with burst time
+
 kill <pid|name>        Terminate process
+
 ps                     Display process table
+
 stats                  Display performance metrics
+
 help                   Show command list
+
 exit                   Exit simulator
 
 ### What This Project Demonstrates
