@@ -47,6 +47,11 @@ void process_create(const char *name) {
     p->burst_time = 1;
     p->remaining_time = 1;
 
+    p->arrival_tick = -1;
+    p->first_run_tick = -1;
+    p->finish_tick = -1;
+    p->started = 0;
+
     process_count++;
 
     printf("Process created: PID=%d, NAME=%s\n", p->pid, p->name);
@@ -85,6 +90,11 @@ void process_create_with_burst(const char *name, int burst) {
     p->start_time = time(NULL);
     p->burst_time = burst;
     p->remaining_time = burst;
+
+    p->arrival_tick = -1;
+    p->first_run_tick = -1;
+    p->finish_tick = -1;
+    p->started = 0;
 
     process_count++;
 
@@ -185,10 +195,10 @@ void process_list_same_name(const char *name) {
     }
 }
 
-void process_kill_by_name(const char *name) {
+int process_kill_by_name_return_pid(const char *name) {
     if (name == NULL || name[0] == '\0') {
         printf("Error: invalid name.\n");
-        return;
+        return -1;
     }
 
     int pids[100];
@@ -196,22 +206,27 @@ void process_kill_by_name(const char *name) {
 
     if (count == -1) {
         printf("Error: invalid search parameters.\n");
-        return;
+        return -1;
     }
 
     if (count == 0) {
         printf("No process named '%s' has been found.\n", name);
-        return;
+        return -1;
     }
 
     if (count == 1) {
         process_kill_by_pid(pids[0]);
-        return;
+        return pids[0];
     }
 
     printf("Multiple processes named '%s' were found.\n", name);
     printf("Please choose a PID to kill from the list below:\n");
     process_list_same_name(name);
+    return -1;
+}
+
+void process_kill_by_name(const char *name) {
+    (void)process_kill_by_name_return_pid(name);
 }
 
 int process_get_count(void) {
@@ -264,6 +279,42 @@ int process_decrement_remaining_time(int pid) {
             if (table[i].state == PROCESS_TERMINATED) return table[i].remaining_time;
             if (table[i].remaining_time > 0) table[i].remaining_time--;
             return table[i].remaining_time;
+        }
+    }
+    return -1;
+}
+
+int process_set_arrival_tick(int pid, int tick) {
+    if (pid <= 0) return -1;
+    for (int i = 0; i < process_count; i++) {
+        if (table[i].pid == pid) {
+            table[i].arrival_tick = tick;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+int process_mark_first_run(int pid, int tick) {
+    if (pid <= 0) return -1;
+    for (int i = 0; i < process_count; i++) {
+        if (table[i].pid == pid) {
+            if (!table[i].started) {
+                table[i].first_run_tick = tick;
+                table[i].started = 1;
+            }
+            return 0;
+        }
+    }
+    return -1;
+}
+
+int process_mark_finish(int pid, int tick) {
+    if (pid <= 0) return -1;
+    for (int i = 0; i < process_count; i++) {
+        if (table[i].pid == pid) {
+            if (table[i].finish_tick < 0) table[i].finish_tick = tick;
+            return 0;
         }
     }
     return -1;

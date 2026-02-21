@@ -16,6 +16,11 @@ typedef struct {
     time_t start_time;
     int burst_time;
     int remaining_time;
+
+    int arrival_tick;
+    int first_run_tick;
+    int finish_tick;
+    int started;
 } Process;
 
 void process_init(void);
@@ -30,6 +35,7 @@ int  process_find_by_name(const char *name, int *pid_array, int max_result);
 
 void process_kill_by_pid(int pid);
 void process_kill_by_name(const char *name);
+int  process_kill_by_name_return_pid(const char *name);
 
 void process_list(void);
 void process_list_same_name(const char *name);
@@ -42,6 +48,10 @@ int process_set_state_by_pid(int pid, ProcessState new_state);
 int process_get_running_pid(void);
 
 int process_decrement_remaining_time(int pid);
+
+int process_set_arrival_tick(int pid, int tick);
+int process_mark_first_run(int pid, int tick);
+int process_mark_finish(int pid, int tick);
 
 int* process_get_pids(int count);
 

@@ -191,15 +191,9 @@ void scheduler_sjf_init(void) {
 }
 
 void scheduler_sjf_step(void) {
-    int running = process_get_running_pid();
-
-    if (running != -1) {
-        int remaining = process_decrement_remaining_time(running);
-        if (remaining < 0) return;
-
-        if (remaining == 0) {
-            process_set_state_by_pid(running, PROCESS_TERMINATED);
-        }
+    int already_running = process_get_running_pid();
+    if (already_running != -1) {
+        current_pid = already_running;
         return;
     }
 
