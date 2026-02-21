@@ -60,13 +60,20 @@ These metrics allow direct comparison between scheduling strategies.
 The project follows a clean modular design:
 
 MiniOS
+
 │
+
 ├── main.c → System initialization & CLI loop
+
 ├── command.c/h → Command parsing & tick execution
+
 ├── process.c/h → Process table & lifecycle management
+
 ├── scheduler.c/h → FIFO / RR / SJF implementations
+
 ├── stats.c/h → Performance tracking & reporting
 
+---
 
 ### Architectural Principles
 
@@ -90,19 +97,23 @@ Each command execution triggers:
 
 This design simulates how real kernels update scheduling decisions at runtime.
 
+---
+
 ### CLI Commands:
 
-run <name> <burst>     Create process with burst time
+- run <name> <burst>     Create process with burst time
 
-kill <pid|name>        Terminate process
+- kill <pid|name>        Terminate process
 
-ps                     Display process table
+- ps                     Display process table
 
-stats                  Display performance metrics
+- stats                  Display performance metrics
 
-help                   Show command list
+- help                   Show command list
 
-exit                   Exit simulator
+- exit                   Exit simulator
+
+---
 
 ### What This Project Demonstrates
 
